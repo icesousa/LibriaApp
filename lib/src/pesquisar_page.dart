@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:libria/src/livro.dart';
 import 'package:libria/src/livro_api.dart';
 import 'package:libria/src/resultado_busca_page.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
 
 class PesquisarPage extends StatefulWidget {
   const PesquisarPage({super.key});
