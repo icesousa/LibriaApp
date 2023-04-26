@@ -14,7 +14,7 @@ class LibriaApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoApp(
       theme: CupertinoThemeData(
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
 
               ),
       debugShowCheckedModeBanner: false,
