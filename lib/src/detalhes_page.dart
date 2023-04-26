@@ -76,7 +76,7 @@ List<String> filtrarAutoresPeloPrimeiroNome(List<dynamic> autores) {
                     ],
                   ),
                    SizedBox(height: 10,),
-                  Text(filtrarAutoresPeloPrimeiroNome(widget.livro.autor).join(', '), style: TextStyle(color: Colors.white54),),
+                  Text(filtrarAutoresPeloPrimeiroNome(widget.livro.autor).join(', '), style: TextStyle(color: Colors.grey.shade600),),
                   SizedBox(
                     height: 16,
                   ),
