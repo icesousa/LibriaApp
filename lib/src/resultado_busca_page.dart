@@ -7,82 +7,140 @@ import 'livro.dart';
 class ResultadoBuscaPage extends StatefulWidget {
   final List<Livro> lista;
   final String pesquisa;
-  ResultadoBuscaPage(this.lista, this.pesquisa, {super.key});
+
+  const ResultadoBuscaPage(this.lista, this.pesquisa, {Key? key});
 
   @override
   State<ResultadoBuscaPage> createState() => _ResultadoBuscaPageState();
 }
 
 class _ResultadoBuscaPageState extends State<ResultadoBuscaPage> {
+  final List<Livro> _favorites = [];
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          middle: Text(widget.pesquisa),
-        ),
-        child: ListView.separated(
-          itemCount: widget.lista.length,
-          separatorBuilder: (BuildContext context, index) => Divider(
-            thickness: 1,
-            color: Colors.white,),
-          itemBuilder: (BuildContext context, index) {
-            var livro = widget.lista[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(CupertinoPageRoute(
-                    builder: (context) => detalhesPage(livro)));
-              },
-              child: Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IntrinsicHeight(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+      navigationBar: CupertinoNavigationBar(
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Icon(Icons.arrow_back)),
+        middle: Text(widget.pesquisa),
+      ),
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, childAspectRatio: 2 / 3),
+        itemCount: widget.lista.length,
+        itemBuilder: (BuildContext context, index) {
+          var livro = widget.lista[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(CupertinoPageRoute(
+                  builder: (context) => detalhesPage(livro)));
+            },
+            child: Container(
+              margin: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0, 2),
+                    blurRadius: 3,
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                        ),
+                        image: DecorationImage(
+                         
+                          image: NetworkImage(livro.thumbnail!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(height: 17),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.network(
-                                      livro.thumbnail!,
-                                      width: 300,
-                                      height: 250,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  
-                                  ],
-                                ),
-                                SizedBox(height: 11,),
-                                  Icon(
-                                      CupertinoIcons.star_fill,
-                                      color: Colors.amber,
-                                    ),
-                                SizedBox(height: 17),
-                                Expanded(
-                                  child: Text(
-                                    livro.titulo,
-                                    textAlign: TextAlign.center,
-                                    maxLines: 2,
-                                    softWrap: true,
-                                  ),
-                                ),
-                                SizedBox(height: 17)
-                              ],
+                          const SizedBox(height: 8),
+                          Text(
+                            livro.titulo,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'by ${livro.autor.join(', ')}',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              if (!_favorites.contains(livro)) {
+                                setState(() {
+                                  _favorites.add(livro);
+                                  _favorites.toList();
+                                });
+                              } else {
+                                setState(() {
+                                  _favorites.remove(livro);
+                                  _favorites.toList();
+                                });
+                              }
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: _favorites.contains(livro)
+                                    ? Colors.yellow[600]
+                                    : Colors.grey[200],
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                _favorites.contains(livro)
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: _favorites.contains(livro)
+                                    ? Colors.white
+                                    : Colors.grey[400],
+                                size: 20,
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
-          },
-        ));
+            ),
+          );
+        },
+      ),
+    );
   }
 }
