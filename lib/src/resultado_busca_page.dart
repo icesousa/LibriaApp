@@ -19,11 +19,12 @@ class _ResultadoBuscaPageState extends State<ResultadoBuscaPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(_favorites.toString());
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         leading: GestureDetector(
             onTap: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context, _favorites);
             },
             child: Icon(Icons.arrow_back)),
         middle: Text(widget.pesquisa),
