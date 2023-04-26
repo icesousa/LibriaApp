@@ -16,6 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   TextEditingController _tituloEditingController = TextEditingController();
   Future<List<Livro>?> _futureLivro = Future.value();
+  List<Livro> homefavoriteList = [];
 
   void _pesquisar() async {
     setState(() {
@@ -24,9 +25,17 @@ class _HomePageState extends State<HomePage> {
 
       _futureLivro.then((lista) {
         if (lista != null) {
-          Navigator.of(context).push(CupertinoPageRoute(
-              builder: (context) =>
-                  ResultadoBuscaPage(lista, _tituloEditingController.text)));
+          Navigator.of(context)
+              .push(CupertinoPageRoute(
+                  builder: (context) =>
+                      ResultadoBuscaPage(lista, _tituloEditingController.text)))
+              .then((homefavorite) {
+            if (homefavorite != null) {
+              setState(() {
+                homefavoriteList = homefavorite;
+              });
+            }
+          });
         }
       });
     });
@@ -34,6 +43,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(homefavoriteList.length);
     return CupertinoPageScaffold(
       navigationBar: _buildNavigationBar(),
       child: Padding(
@@ -158,33 +168,22 @@ class _HomePageState extends State<HomePage> {
     ]);
   }
 
-
-
-_buildGridView() {
-  return SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    child: Row(
-      children: List.generate(
-        6,
-        (index) => Card(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.4,
-            child: Center(
-              child: Text('teste'),
+  _buildGridView() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: List.generate(
+          6,
+          (index) => Card(
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: Center(
+                child: Text('teste'),
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
-
-
-
-
-
-}
-
-
-
-
