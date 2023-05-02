@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 
-import 'livro.dart';
-import 'livro_api.dart';
-import 'resultado_busca_page.dart';
+import '../../models/livro.dart';
+import '../../services/livro_api.dart';
+import '../resultado_busca_page/resultado_busca_page.dart';
 import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,6 +18,12 @@ class _HomePageState extends State<HomePage> {
   TextEditingController _tituloEditingController = TextEditingController();
   Future<List<Livro>?> _futureLivro = Future.value();
   List<Livro> homefavoriteList = [];
+  
+@override
+  void initState() {
+    super.initState();
+    
+  }
 
   void _pesquisar() async {
     setState(() {
@@ -43,6 +50,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     print(homefavoriteList.length);
     return CupertinoPageScaffold(
       navigationBar: _buildNavigationBar(),
@@ -168,22 +176,30 @@ class _HomePageState extends State<HomePage> {
     ]);
   }
 
-  _buildGridView() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: List.generate(
-          6,
-          (index) => Card(
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.4,
-              child: Center(
-                child: Text('teste'),
-              ),
-            ),
+Widget _buildGridView() {  
+      
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: List.generate(
+            homefavoriteList.length,
+            (index) {
+              Livro livro = homefavoriteList[index];
+              return Card(
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  child: Center(
+                    child: Text(livro.titulo),
+                  ),
+                ),
+              );
+            },
           ),
         ),
-      ),
-    );
-  }
+      );
+    }
+  
 }
+
+
+

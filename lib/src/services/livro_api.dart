@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'livro.dart';
+import '../models/livro.dart';
 import 'package:http/http.dart' as Http;
 
 const URL = "https://www.googleapis.com/books/v1/volumes?q=";

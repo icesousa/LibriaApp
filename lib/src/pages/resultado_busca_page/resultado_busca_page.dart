@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'detalhes_page.dart';
-import 'livro.dart';
+import '../detalhes_page/detalhes_page.dart';
+import '../../models/livro.dart';
 
 class ResultadoBuscaPage extends StatefulWidget {
   final List<Livro> lista;
@@ -23,9 +23,7 @@ class _ResultadoBuscaPageState extends State<ResultadoBuscaPage> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         leading: GestureDetector(
-            onTap: () {
-              Navigator.pop(context, _favorites);
-            },
+            onTap: () => Navigator.pop(context, _favorites),
             child: Icon(Icons.arrow_back)),
         middle: Text(widget.pesquisa),
       ),
@@ -65,7 +63,6 @@ class _ResultadoBuscaPageState extends State<ResultadoBuscaPage> {
                           topRight: Radius.circular(12),
                         ),
                         image: DecorationImage(
-                         
                           image: NetworkImage(livro.thumbnail!),
                           fit: BoxFit.cover,
                         ),
@@ -101,35 +98,38 @@ class _ResultadoBuscaPageState extends State<ResultadoBuscaPage> {
                           const Spacer(),
                           GestureDetector(
                             onTap: () {
-                              if (!_favorites.contains(livro)) {
-                                setState(() {
-                                  _favorites.add(livro);
-                                  _favorites.toList();
-                                });
-                              } else {
+                              if (_favorites.contains(livro)) {
                                 setState(() {
                                   _favorites.remove(livro);
                                   _favorites.toList();
                                 });
+                              } else {
+                                setState(() {
+                                  _favorites.add(livro);
+                                });
                               }
                             },
-                            child: Container(
-                              padding: EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: _favorites.contains(livro)
-                                    ? Colors.yellow[600]
-                                    : Colors.grey[200],
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Icon(
-                                _favorites.contains(livro)
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: _favorites.contains(livro)
-                                    ? Colors.white
-                                    : Colors.grey[400],
-                                size: 20,
-                              ),
+                            child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: _favorites.contains(livro)
+                                        ? Colors.yellow[600]
+                                        : Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Icon(
+                                    _favorites.contains(livro)
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: _favorites.contains(livro)
+                                        ? Colors.white
+                                        : Colors.grey[400],
+                                    size: 20,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],

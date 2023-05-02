@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'livro.dart';
+import '../../models/livro.dart';
 
 class detalhesPage extends StatefulWidget {
   const detalhesPage(this.livro, {super.key});
