@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:libria/src/storage/preferences_manager.dart';
 
 import '../detalhes_page/detalhes_page.dart';
 import '../../models/livro.dart';
@@ -19,11 +20,12 @@ class _ResultadoBuscaPageState extends State<ResultadoBuscaPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(_favorites.toString());
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         leading: GestureDetector(
-            onTap: () => Navigator.pop(context, _favorites),
+            onTap: () => setState(() {
+                  Navigator.pop(context, _favorites);
+                }),
             child: Icon(Icons.arrow_back)),
         middle: Text(widget.pesquisa),
       ),
@@ -88,7 +90,7 @@ class _ResultadoBuscaPageState extends State<ResultadoBuscaPage> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'by ${livro.autor.join(', ')}',
+                            'by ${livro.autor!.join(', ')}',
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               fontSize: 14,
@@ -106,10 +108,12 @@ class _ResultadoBuscaPageState extends State<ResultadoBuscaPage> {
                               } else {
                                 setState(() {
                                   _favorites.add(livro);
+                                  PreferencesManager().adicionarLivros(livro);
                                 });
                               }
                             },
-                            child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
                                   padding: EdgeInsets.all(4),
