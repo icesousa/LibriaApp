@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:libria/src/storage/preferences_manager.dart';
+import 'package:libria/src/widgets/container_image.dart';
 
 import '../../models/livro.dart';
 import '../../services/livro_api.dart';
 import '../resultado_busca_page/resultado_busca_page.dart';
-import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,11 +18,13 @@ class _HomePageState extends State<HomePage> {
   TextEditingController _tituloEditingController = TextEditingController();
   Future<List<Livro>?> _futureLivro = Future.value();
   List<Livro> homefavoriteList = [];
-  
-@override
+
+  late Future<List<Livro>?> _futureList;
+
+  @override
   void initState() {
     super.initState();
-    
+    _futureList = PreferencesManager().consultarTodosLivros();
   }
 
   void _pesquisar() async {
@@ -50,8 +52,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
-    print(homefavoriteList.length);
     return CupertinoPageScaffold(
       navigationBar: _buildNavigationBar(),
       child: Padding(
@@ -176,30 +176,38 @@ class _HomePageState extends State<HomePage> {
     ]);
   }
 
-Widget _buildGridView() {  
-      
-      return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: List.generate(
-            homefavoriteList.length,
-            (index) {
-              Livro livro = homefavoriteList[index];
-              return Card(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  child: Center(
-                    child: Text(livro.titulo),
+  Widget _buildGridView() {
+    return FutureBuilder(
+      future: _futureList,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CupertinoActivityIndicator();
+        }
+        if (snapshot.connectionState == ConnectionState.done) {
+          return snapshot.hasData
+              ? SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List.generate(
+                      snapshot.data!.length,
+                      (index) {
+                        Livro livro = snapshot.data![index];
+                        return customImageContainer(
+                            livro.thumbnail!,
+                            livro.titulo,
+                            livro.autor!.first,
+                            context,
+                            livro,
+                            130,
+                            220);
+                      },
+                    ),
                   ),
-                ),
-              );
-            },
-          ),
-        ),
-      );
-    }
-  
+                )
+              : SizedBox();
+        }
+        return SizedBox();
+      },
+    );
+  }
 }
-
-
-
