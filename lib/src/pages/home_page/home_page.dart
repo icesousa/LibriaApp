@@ -17,15 +17,23 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   TextEditingController _tituloEditingController = TextEditingController();
   Future<List<Livro>?> _futureLivro = Future.value();
-  List<Livro> homefavoriteList = [];
+  List<Livro>? _favorites = null;
+
+  void consultarTodosLivros() async{
+    _favorites = await PreferencesManager().consultarTodosLivros();
+    setState(() {
+      
+    });
+  }
+
+  
 
   late Future<List<Livro>?> _futureList;
+ 
 
-  @override
-  void initState() {
-    super.initState();
-    _futureList = PreferencesManager().consultarTodosLivros();
-  }
+  
+ 
+
 
   void _pesquisar() async {
     setState(() {
@@ -37,11 +45,12 @@ class _HomePageState extends State<HomePage> {
           Navigator.of(context)
               .push(CupertinoPageRoute(
                   builder: (context) =>
-                      ResultadoBuscaPage(lista, _tituloEditingController.text)))
-              .then((homefavorite) {
-            if (homefavorite != null) {
+                      ResultadoBuscaPage(lista, _tituloEditingController.text,)))
+              .then((futurefavorite) {
+            if (futurefavorite != null) {
               setState(() {
-                homefavoriteList = homefavorite;
+                print('consultado');
+                
               });
             }
           });
@@ -52,6 +61,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    consultarTodosLivros();
+     
     return CupertinoPageScaffold(
       navigationBar: _buildNavigationBar(),
       child: Padding(
@@ -177,21 +188,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildGridView() {
-    return FutureBuilder(
-      future: _futureList,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CupertinoActivityIndicator();
-        }
-        if (snapshot.connectionState == ConnectionState.done) {
-          return snapshot.hasData
+    
+          return _favorites!.isNotEmpty
               ? SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: List.generate(
-                      snapshot.data!.length,
+                      _favorites!.length,
                       (index) {
-                        Livro livro = snapshot.data![index];
+                        Livro livro = _favorites![index];
                         return customImageContainer(
                             livro.thumbnail!,
                             livro.titulo,
@@ -206,8 +211,8 @@ class _HomePageState extends State<HomePage> {
                 )
               : SizedBox();
         }
-        return SizedBox();
-      },
-    );
+       
+      
+    
   }
-}
+
