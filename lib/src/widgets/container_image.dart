@@ -1,16 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/livro.dart';
-import '../pages/detalhes_page/detalhes_page.dart';
 
-Widget customImageContainer(String image, String titulo, String autor,
-    BuildContext context, Livro livro, double width, double height) {
+Widget customImageContainer(
+    String? image,
+    String titulo,
+    String autor,
+    BuildContext context,
+    Livro livro,
+    double width,
+    double height,
+    void Function()? onTap) {
   return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-            CupertinoPageRoute(builder: (context) => detalhesPage(livro)));
-      },
+      onTap: onTap,
       child: Container(
         width: width,
         height: height,
@@ -39,10 +41,14 @@ Widget customImageContainer(String image, String titulo, String autor,
                     topLeft: Radius.circular(5),
                     topRight: Radius.circular(5),
                   ),
-                  image: DecorationImage(
-                    image: NetworkImage(image),
-                    fit: BoxFit.cover,
-                  ),
+                  image: image != null && Uri.parse(image).isAbsolute
+                      ? DecorationImage(
+                          image: NetworkImage(image),
+                          fit: BoxFit.cover,
+                        )
+                      : DecorationImage(
+                          image: AssetImage('imagens/notfound.png'),
+                          fit: BoxFit.cover),
                 ),
               ),
             ),
