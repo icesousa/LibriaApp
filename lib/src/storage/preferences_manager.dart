@@ -1,35 +1,57 @@
 import 'dart:convert';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/livro.dart';
 
+final dataBaseProvider =
+    Provider<PreferencesManager>((ref) => PreferencesManager());
+
 class PreferencesManager {
+  Future<void> adicionarRecomendado(Livro livro) async {
+    final preferences = await SharedPreferences.getInstance();
+    preferences.setString(livro.titulo, json.encode(livro.toJson()));
+  }
+
+  Future<List<Livro>?> consultarRecomendados() async {
+    var lista = <Livro>[];
+    final preferences = await SharedPreferences.getInstance();
+    final keys = preferences.getKeys();
+
+    for (var id in keys) {
+      try {
+        final livroJson = json.decode(preferences.getString(id)!);
+
+        lista.add(Livro.fromPreferences(livroJson));
+      } catch (e) {
+        print('Erro ao desserializar o livro com a chave $id: $e');
+      }
+    }
+
+    return lista;
+  }
+
   Future<void> adicionarLivros(Livro livro) async {
     final preferences = await SharedPreferences.getInstance();
     preferences.setString(livro.id, json.encode(livro.toJson()));
-    print(livro.titulo);
-    print(preferences.getKeys().toString());
   }
 
   Future<List<Livro>?> consultarTodosLivros() async {
     var lista = <Livro>[];
     final preferences = await SharedPreferences.getInstance();
     final keys = preferences.getKeys();
-    print(keys.toString());
 
     for (var id in keys) {
       try {
         final livroJson = json.decode(preferences.getString(id)!);
-        print('Dados JSON do livro com a chave $id: $livroJson'); // Imprime o conteúdo de livroJson
+
         lista.add(Livro.fromPreferences(livroJson));
-        print(lista);
       } catch (e) {
         print('Erro ao desserializar o livro com a chave $id: $e');
       }
     }
 
-    print('Lista de livros retornada: $lista');
     return lista;
   }
 
@@ -38,7 +60,7 @@ class PreferencesManager {
     preferences.remove(id);
   }
 
-  Future<void> removerTodosLivros( )async{
+  Future<void> removerTodosLivros() async {
     final preferences = await SharedPreferences.getInstance();
     var collection = preferences.getKeys();
     for (var livro in collection) {
