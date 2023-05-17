@@ -9,19 +9,23 @@ class BooksApi {
   Future<List<Livro>?> buscarLivrosPorTitulo(String titulo) async {
     var url = URL + titulo;
     final response = await Http.get(Uri.parse(url));
+    print(url);
     if (response.statusCode == 200) {
       //sucess
       var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
-      print(jsonResponse);
+     
       var totalItems = jsonResponse["totalItems"] as int;
       if (totalItems == 0) {
         return null;
       }
       var listaItems = jsonResponse['items'] as List;
+            print(jsonResponse);
 
       return listaItems.map((livro) => Livro.fromJson(livro)).toList();
     } else {
       throw Exception(response.reasonPhrase);
     }
+   
   }
+  
 }
