@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:libria/src/pages/home_page/home_page.dart';
-import 'package:libria/src/pages/pesquisar_page/pesquisar_page.dart';
 
 void main() async {
-  runApp(
-       LibriaApp());
+  runApp(LibriaApp());
 }
 
 class LibriaApp extends StatelessWidget {
@@ -20,20 +18,24 @@ class LibriaApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
-            inactiveColor: Colors.white60,
-            activeColor: Colors.white,
+        
+            backgroundColor: CupertinoColors.white,
+            inactiveColor: Colors.grey,
+            activeColor: Colors.black54,
             items: [
               BottomNavigationBarItem(
                 icon: Icon(
                   CupertinoIcons.home,
+                  size: 30,
                 ),
                 label: 'Home',
               ),
               BottomNavigationBarItem(
                 icon: Icon(
                   CupertinoIcons.search,
+                  size: 30,
                 ),
-                label: 'Pesquisar',
+                label: 'Livros',
               )
             ]),
         tabBuilder: (context, index) {
@@ -46,7 +48,7 @@ class LibriaApp extends StatelessWidget {
               break;
             case 1:
               retorno = CupertinoTabView(
-                builder: (context) => PesquisarPage(),
+                builder: (context) => HomePage(),
               );
               break;
             default:
